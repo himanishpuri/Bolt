@@ -71,4 +71,4 @@ Over **1.4 billion adults** worldwide remain unbanked due to the absence of trad
 3. Vaishali Aggarwal
 4. Jatin Aggarwal
 
-> Developed during the brAInwave hackathon conducted by **AIMS-DTU** in 2024.
+> Developed during the futureforce AI Challenge conducted by **Salesforce** in 2025.
