@@ -18,14 +18,14 @@ A comprehensive stock market and investment platform built with Node.js, Express
 - **Sector Analysis**: Get sector information for stock symbols
 
 ### 📰 News Section
-- **News Analysis**: AI-powered stock news analysis and sentiment
-- **Market Sentiment**: Overall market sentiment analysis
+- **News Analysis**: AI-powered stock news analysis and sentiment using Google Gemini
+- **Market Sentiment**: Overall market sentiment analysis with Gemini AI
 - **Personalized News**: News based on user's areas of interest
-- **Chat Sessions**: Interactive news analysis sessions
+- **Chat Sessions**: Interactive news analysis sessions powered by Gemini
 
 ### 📚 Learning Section
 - **YouTube Integration**: Search for educational content
-- **Educational Chat**: AI-powered learning assistance
+- **Educational Chat**: AI-powered learning assistance using Google Gemini
 - **Learning Resources**: Curated educational materials
 - **Personalized Recommendations**: Learning content based on user interests
 - **Progress Tracking**: Track learning progress
@@ -37,7 +37,7 @@ A comprehensive stock market and investment platform built with Node.js, Express
 - **Database**: MongoDB with Mongoose ODM
 - **Authentication**: JWT (JSON Web Tokens)
 - **Stock Data**: Yahoo Finance API
-- **AI Integration**: On-Demand.io API
+- **AI Integration**: Google Gemini AI API
 - **Real-time**: Socket.io
 - **Validation**: Express Validator
 - **Security**: Helmet, CORS, Rate Limiting
@@ -81,9 +81,9 @@ A comprehensive stock market and investment platform built with Node.js, Express
    PORT=8000
    NODE_ENV=development
    
-   # API Keys
-   API_KEY=your-on-demand-api-key
-   YOUTUBE_API_KEY=your-youtube-api-key
+       # API Keys
+    GEMINI_API_KEY=your-gemini-api-key
+    YOUTUBE_API_KEY=your-youtube-api-key
    
    # Redis (optional)
    REDIS_URL=redis://localhost:6379

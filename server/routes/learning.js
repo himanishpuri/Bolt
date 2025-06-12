@@ -2,6 +2,7 @@ const express = require('express');
 const axios = require('axios');
 const { query, validationResult } = require('express-validator');
 const { authenticateToken, optionalAuth } = require('../middleware/auth');
+const geminiService = require('../utils/gemini');
 
 const router = express.Router();
 
@@ -96,7 +97,6 @@ router.get('/youtube-search', authenticateToken, [
 router.get('/educational-chat', optionalAuth, async (req, res) => {
   try {
     const { topic } = req.query;
-    const externalUserId = req.user ? req.user._id.toString() : 'anonymous';
 
     // Default educational topics if none provided
     const educationalTopics = topic ? [topic] : [
@@ -107,78 +107,15 @@ router.get('/educational-chat', optionalAuth, async (req, res) => {
       'portfolio diversification'
     ];
 
-    const apiKey = process.env.API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return res.status(500).json({
-        error: 'API key not configured'
+        error: 'Gemini API key not configured'
       });
     }
 
-    const createSessionHeaders = {
-      'apikey': apiKey,
-      'Content-Type': 'application/json'
-    };
-
-    const responses = [];
-
-    // Process each educational topic
-    for (const educationalTopic of educationalTopics) {
-      try {
-        // Step 1: Create Chat Session
-        const createSessionUrl = 'https://api.on-demand.io/chat/v1/sessions';
-        const createSessionBody = {
-          pluginIds: [],
-          externalUserId: externalUserId
-        };
-
-        const sessionResponse = await axios.post(createSessionUrl, createSessionBody, {
-          headers: createSessionHeaders
-        });
-
-        if (!sessionResponse.data || !sessionResponse.data.data) {
-          responses.push({
-            topic: educationalTopic,
-            error: 'Failed to create chat session'
-          });
-          continue;
-        }
-
-        const sessionId = sessionResponse.data.data.id;
-
-        // Step 2: Submit Educational Query
-        const submitQueryUrl = `https://api.on-demand.io/chat/v1/sessions/${sessionId}/query`;
-        const submitQueryBody = {
-          endpointId: "predefined-openai-gpt4o",
-          query: `You are an educational financial advisor. Provide a comprehensive but concise explanation about ${educationalTopic} for someone learning about investing. Include key concepts, practical tips, and important considerations. Keep it educational and informative.`,
-          pluginIds: ["plugin-1712327325", "plugin-1713962163", "plugin-1729887147"],
-          responseMode: "sync"
-        };
-
-        const queryResponse = await axios.post(submitQueryUrl, submitQueryBody, {
-          headers: createSessionHeaders
-        });
-
-        if (!queryResponse.data || !queryResponse.data.data) {
-          responses.push({
-            topic: educationalTopic,
-            error: 'Failed to get educational content'
-          });
-        } else {
-          const answer = queryResponse.data.data.answer;
-          responses.push({
-            topic: educationalTopic,
-            content: answer
-          });
-        }
-
-      } catch (error) {
-        console.error(`Error processing topic ${educationalTopic}:`, error.message);
-        responses.push({
-          topic: educationalTopic,
-          error: `Educational content request failed: ${error.message}`
-        });
-      }
-    }
+    // Process each educational topic using Gemini
+    const responses = await geminiService.processMultipleEducationalTopics(educationalTopics);
 
     res.json({
       educational_content: responses
